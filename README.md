@@ -14,6 +14,20 @@ Release 4.5 of the CollectionSpace services API, which is currently under develo
 - Session-oriented API
 - Transparent authentication token management
 
+## Installation
+
+Using git:
+
+```
+$ git clone https://github.com/collectionspace/cspace-client.js.git
+$ cd cspace-client.js
+$ npm install
+```
+
+## Usage
+
+See the [examples](./examples) and [integration tests](./test/integration) for examples of usage.
+
 ## About CollectionSpace
 
 [CollectionSpace](http://www.collectionspace.org/) is a free, open-source collections management application for museums, historical societies, natural science collections, and more.
