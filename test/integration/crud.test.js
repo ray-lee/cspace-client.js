@@ -253,7 +253,7 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
       .be.rejected
       .and.have.deep.property('response.status', 403);
   });
-  
+
   it('can log out as admin', () =>
     adminSession.logout().should.eventually
       .be.fulfilled);
