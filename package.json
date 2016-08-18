@@ -69,7 +69,7 @@
     "webpack": "^1.13.1"
   },
   "dependencies": {
-    "cspace-api": "*",
+    "cspace-api": ">=0.0.3",
     "url-join": "^1.1.0"
   },
   "nyc": {
