@@ -104,7 +104,6 @@ module.exports = function karma(config) {
     frameworks: [
       'mocha',
       'chai',
-      'sinon',
     ],
 
     reporters: [
