@@ -2,7 +2,7 @@
 
 const webpack = require('webpack');
 
-const library = 'cspace';
+const library = 'cspaceClient';
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 const filename = `${library}${isProduction ? '.min' : ''}.js`;

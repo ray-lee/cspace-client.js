@@ -9,16 +9,23 @@
     "cspace",
     "client"
   ],
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "files": [
+    "dist",
+    "lib",
+    "src"
+  ],
   "scripts": {
     "clean": "rimraf lib dist coverage",
     "coverage": "istanbul report --root coverage text && istanbul report --root coverage lcov",
     "doc": "documentation readme src/*.js -s \"API\"",
     "lint": "eslint *.js src test examples",
-    "build": "npm run build-dev && npm run build-prod",
-    "build-dev": "webpack",
-    "build-prod": "cross-env NODE_ENV=production webpack",
-    "check": "npm run lint && npm run test",
+    "build": "npm run build-cjs && npm run build-umd",
+    "build-cjs": "cross-env BABEL_ENV=cjs babel ./src -d lib",
+    "build-umd": "npm run build-umd-dev && npm run build-umd-prod",
+    "build-umd-dev": "webpack",
+    "build-umd-prod": "cross-env NODE_ENV=production webpack",
+    "check": "npm run lint && npm run test && npm run coverage",
     "test": "npm run test-node && npm run test-browser",
     "test-specs": "npm run test-node-specs && npm run test-browser-specs",
     "test-integration": "npm run test-node-integration && npm run test-browser-integration",

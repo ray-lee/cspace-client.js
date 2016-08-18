@@ -26,7 +26,7 @@ $ npm install
 
 ## Usage
 
-See the [examples](./examples) and [integration tests](./test/integration) for examples of usage.
+See the [examples](https://github.com/collectionspace/cspace-client.js/tree/master/examples) and [integration tests](https://github.com/collectionspace/cspace-client.js/tree/master/test/integration) for examples of usage.
 
 ## About CollectionSpace
 

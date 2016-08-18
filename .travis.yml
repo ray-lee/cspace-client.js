@@ -7,8 +7,6 @@ before_script:
   - sleep 3 # give xvfb some time to start
 script:
   - npm run check
-  - npm run build
-  - npm run coverage
 after_success:
   - "cat coverage/lcov.info | coveralls --verbose"
 cache:
