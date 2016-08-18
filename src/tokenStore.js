@@ -1,6 +1,6 @@
 /* global localStorage */
 
-import { isLocalStorageAvailable, localStorageKey } from './utils/storageUtils';
+import { isLocalStorageAvailable, localStorageKey } from './localStorage';
 
 const authTokens = [
   'accessToken',

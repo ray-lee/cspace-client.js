@@ -2,7 +2,7 @@
 
 import chai from 'chai';
 import tokenStore from '../../src/tokenStore';
-import { isLocalStorageAvailable, localStorageKey } from '../../src/utils/storageUtils';
+import { isLocalStorageAvailable, localStorageKey } from '../../src/localStorage';
 
 const expect = chai.expect;
 

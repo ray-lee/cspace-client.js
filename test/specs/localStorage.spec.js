@@ -1,5 +1,5 @@
 import chai from 'chai';
-import { isLocalStorageAvailable, localStorageKey } from '../../../src/utils/storageUtils';
+import { isLocalStorageAvailable, localStorageKey } from '../../src/localStorage';
 
 chai.should();
 
