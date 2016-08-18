@@ -2,7 +2,7 @@ import client from '../src';
 import log from './helpers/log';
 
 const cspace = client({
-  url: 'http://localhost:8180',
+  url: 'http://nightly.collectionspace.org:8180',
 });
 
 const session = cspace.session({
@@ -10,25 +10,20 @@ const session = cspace.session({
   password: 'Administrator',
 });
 
-const readFirstItem = (listResult) => {
-  const itemsInPage = listResult.data['ns2:abstract-common-list'].itemsInPage;
+const getFirst = (listResult) => {
+  const list = listResult.data['ns2:abstract-common-list'];
+  const uri = (list.itemsInPage > 0) ? list['list-item'][0].uri : null;
 
-  if (itemsInPage > 0) {
-    const uri = listResult.data['ns2:abstract-common-list']['list-item'][0].uri;
-
-    console.log(`reading ${uri}`);
-
-    return session.read(uri);
-  }
-
-  return Promise.resolve({});
+  return Promise.resolve(uri);
 };
 
 session.login()
   .then(() => log('logged in'))
   .then(() => session.read('collectionobjects'))
-  .then(result => log('found items', result))
-  .then(result => readFirstItem(result))
+  .then(listResult => log('found items', listResult))
+  .then(listResult => getFirst(listResult))
+  .then(uri => log('found first item', uri))
+  .then(uri => uri ? session.read(uri) : Promise.resolve(null))
   .then(result => log('retrieved record', result))
   .then(() => session.logout())
   .then(() => log('logged out'))
