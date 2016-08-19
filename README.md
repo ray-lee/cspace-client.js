@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/collectionspace/cspace-client.js.svg?branch=master)](https://travis-ci.org/collectionspace/cspace-client.js)
 [![Coverage Status](https://coveralls.io/repos/github/collectionspace/cspace-client.js/badge.svg?branch=master)](https://coveralls.io/github/collectionspace/cspace-client.js?branch=master)
 
-A CollectionSpace client, built on the [cspace-api](../cspace-api) library.
+A CollectionSpace client, built on the [cspace-api](https://github.com/collectionspace/cspace-api.js) library.
 
 Release 4.5 of the CollectionSpace services API, which is currently under development, is required. This library is not compatible with releases 4.4 and earlier.
 
