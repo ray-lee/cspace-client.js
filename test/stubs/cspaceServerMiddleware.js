@@ -36,6 +36,9 @@ module.exports = function cspaceServerMiddleware(req, res, next) {
           access_token: `access_${tokenNum}`,
           refresh_token: `refresh_${tokenNum}`,
         },
+        headers: {
+          'Cache-Control': 'no-store',
+        },
       });
 
       tokenNum += 1;
@@ -60,6 +63,9 @@ module.exports = function cspaceServerMiddleware(req, res, next) {
         invalidToken,
         presentedToken,
       },
+      headers: {
+        'Cache-Control': 'no-store',
+      },
     });
   } else if (req.url.startsWith('/cspace-services/')) {
     // On any other request, return the bearer token that was supplied in the Authorization header.
@@ -69,6 +75,9 @@ module.exports = function cspaceServerMiddleware(req, res, next) {
       statusCode: 200,
       body: {
         presentedToken: req.headers.authorization.substring('Bearer '.length),
+      },
+      headers: {
+        'Cache-Control': 'no-store',
       },
     });
   } else {
