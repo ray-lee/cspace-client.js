@@ -1,5 +1,10 @@
 /* global window encodeURIComponent */
 
+export const authTokens = () => [
+  'accessToken',
+  'refreshToken',
+];
+
 export const isLocalStorageAvailable = () => {
   // From https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 
@@ -16,5 +21,5 @@ export const isLocalStorageAvailable = () => {
   }
 };
 
-export const localStorageKey = (...parts) =>
+export const storeKey = (...parts) =>
   [...parts].map(part => encodeURIComponent(part)).join(':');

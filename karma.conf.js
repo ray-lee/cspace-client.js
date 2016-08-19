@@ -2,6 +2,7 @@
 /* eslint no-console: "off" */
 
 const webpack = require('webpack');
+const cspaceServerMiddleware = require('./test/stubs/cspaceServerMiddleware');
 
 const sauceLaunchers = {
   'chrome-latest-osx': {
@@ -165,5 +166,19 @@ module.exports = function karma(config) {
     browserDisconnectTolerance: 1,
     browserNoActivityTimeout: 4 * 60 * 1000,
     captureTimeout: 4 * 60 * 1000,
+
+    // Add middleware to stub the cspace services layer.
+
+    middleware: ['cspaceServerMiddleware'],
+
+    plugins: [
+      ...config.plugins,
+
+      {
+        'middleware:cspaceServerMiddleware': ['factory', function create() {
+          return cspaceServerMiddleware;
+        }],
+      },
+    ],
   });
 };

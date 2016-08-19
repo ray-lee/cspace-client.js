@@ -1,6 +1,8 @@
 import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import session from '../../src/session';
 
+chai.use(chaiAsPromised);
 chai.should();
 
 describe('session', () => {

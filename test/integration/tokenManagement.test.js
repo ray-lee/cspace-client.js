@@ -1,0 +1,105 @@
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import client from '../../src/client';
+
+chai.use(chaiAsPromised);
+chai.should();
+
+const clientConfig = {
+  url: 'http://localhost:9876',
+};
+
+const sessionConfig = {
+  username: 'user@collectionspace.org',
+  password: 'secret',
+};
+
+let accessToken;
+
+describe(`token management on ${clientConfig.url}`, function suite() {
+  this.timeout(20000);
+
+  const cspace = client(clientConfig);
+  const session = cspace.session(sessionConfig);
+
+  it('can log in and retrieve an access token', () =>
+    session.login().should.eventually
+      .be.fulfilled
+      .and.have.deep.property('data.access_token')
+      .then(token => {
+        accessToken = token;
+      }));
+
+  it('presents the token to perform operations on resources', () =>
+    session.read('something').should.eventually
+      .be.fulfilled
+      .and.have.deep.property('data.presentedToken', accessToken));
+
+  it('reuses the stored token in another session with the same url and user', () => {
+    const newSession = cspace.session({
+      username: sessionConfig.username,
+    });
+
+    return newSession.read('something').should.eventually
+      .be.fulfilled
+      .and.have.deep.property('data.presentedToken', accessToken);
+  });
+
+  it('transparently renews an expired token', () =>
+    session.read(`reject/${accessToken}`).should.eventually
+      .be.fulfilled
+      .and.have.deep.property('data.presentedToken')
+      .then(newToken => {
+        newToken.should.not.equal(accessToken);
+
+        accessToken = newToken;
+      }));
+
+  it('presents the new token to perform operations on resources', () =>
+    session.read('something').should.eventually
+      .be.fulfilled
+      .and.have.deep.property('data.presentedToken', accessToken));
+
+  it('does not attempt to issue multiple simultaneous token renewal requests', () => {
+    const newTokens = {};
+
+    return Promise.all([
+      session.read(`reject/${accessToken}`).should.eventually
+        .be.fulfilled
+        .and.have.deep.property('data.presentedToken')
+        .then(newToken => {
+          newToken.should.not.equal(accessToken);
+          newTokens[newToken] = true;
+        }),
+
+      session.read(`reject/${accessToken}`).should.eventually
+        .be.fulfilled
+        .and.have.deep.property('data.presentedToken')
+        .then(newToken => {
+          newToken.should.not.equal(accessToken);
+          newTokens[newToken] = true;
+        }),
+
+      session.read(`reject/${accessToken}`).should.eventually
+        .be.fulfilled
+        .and.have.deep.property('data.presentedToken')
+        .then(newToken => {
+          newToken.should.not.equal(accessToken);
+          newTokens[newToken] = true;
+        }),
+    ])
+    .then(() => {
+      const newTokenList = Object.keys(newTokens);
+
+      newTokenList.length.should.equal(1);
+
+      accessToken = newTokenList[0];
+    });
+  });
+
+  it('presents the new token to perform operations on resources', () =>
+    session.read('something').should.eventually
+      .be.fulfilled
+      .and.have.deep.property('data.presentedToken', accessToken));
+});
+

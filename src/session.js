@@ -11,6 +11,7 @@ export default function session(sessionConfig) {
   const config = Object.assign({}, defaultSessionConfig, sessionConfig);
   const authStore = tokenStore(config.username, config.url);
 
+  let authRenewRequest = null;
   let auth = authStore.fetch();
 
   const cs = cspace({
@@ -32,8 +33,9 @@ export default function session(sessionConfig) {
 
     authStore.store(auth);
 
-    // We have a token, so the password can be discarded.
+    // We have tokens, so the username/password can be discarded.
 
+    delete config.username;
     delete config.password;
 
     return Promise.resolve(response);
@@ -49,14 +51,24 @@ export default function session(sessionConfig) {
     })
     .then(response => storeToken(response));
 
-  const renewAuthToken = () =>
-    csAuth.create('token', {
-      data: {
-        grant_type: 'refresh_token',
-        refresh_token: auth.refreshToken,
-      },
-    })
-    .then(response => storeToken(response));
+  const renewAuthToken = () => {
+    if (!authRenewRequest) {
+      authRenewRequest = csAuth.create('token', {
+        data: {
+          grant_type: 'refresh_token',
+          refresh_token: auth.refreshToken,
+        },
+      })
+      .then(response => storeToken(response))
+      .then(response => {
+        authRenewRequest = null;
+
+        return Promise.resolve(response);
+      });
+    }
+
+    return authRenewRequest;
+  };
 
   const tokenizeRequest = (requestConfig) =>
     Object.assign({}, requestConfig, { token: auth.accessToken });
@@ -64,7 +76,7 @@ export default function session(sessionConfig) {
   const tokenized = (operation) => (resource, requestConfig) =>
     cs[operation](resource, tokenizeRequest(requestConfig))
       .catch(error => {
-        if (error.response.status === 401) {
+        if (error.response.status === 401 && auth.refreshToken) {
           // Renew the access token, and retry the request.
 
           return renewAuthToken()

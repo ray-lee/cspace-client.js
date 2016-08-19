@@ -34,6 +34,18 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
 
   let objectCsid = '';
 
+  it('cannot list records as admin before logging in', function test() {
+    return adminSession.read('collectionobjects').should.eventually
+      .be.rejected
+      .and.have.deep.property('response.status', 401);
+  });
+
+  it('cannot list records as reader before logging in', function test() {
+    return readerSession.read('collectionobjects').should.eventually
+      .be.rejected
+      .and.have.deep.property('response.status', 401);
+  });
+
   it('can log in as admin', () =>
     adminSession.login().should.eventually
       .be.fulfilled
@@ -77,7 +89,7 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
       });
   });
 
-  it('can not create an object record as reader', function test() {
+  it('cannot create an object record as reader', function test() {
     if (!readerLoggedIn) {
       this.skip();
     }
@@ -209,7 +221,7 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
               .with.property('comment', commentUpdate);
   });
 
-  it('can not update the record as reader', function test() {
+  it('cannot update the record as reader', function test() {
     if (!objectCsid || !readerLoggedIn) {
       this.skip();
     }
@@ -258,7 +270,29 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
     adminSession.logout().should.eventually
       .be.fulfilled);
 
+  it('cannot list records as admin after logging out', function test() {
+    return adminSession.read('collectionobjects').should.eventually
+      .be.rejected
+      .and.have.deep.property('response.status', 401);
+  });
+
+  it('can list records as reader after logging out as admin', function test() {
+    return readerSession.read('collectionobjects').should.eventually
+      .be.fulfilled;
+  });
+
   it('can log out as reader', () =>
     readerSession.logout().should.eventually
       .be.fulfilled);
+
+  it('cannot list records as reader after logging out', function test() {
+    return readerSession.read('collectionobjects').should.eventually
+      .be.rejected
+      .and.have.deep.property('response.status', 401);
+  });
+
+  it('cannot log in a second time in the same session', () =>
+    readerSession.login().should.eventually
+      .be.rejected
+      .and.have.deep.property('response.status', 400));
 });
