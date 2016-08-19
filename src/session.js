@@ -38,7 +38,7 @@ export default function session(sessionConfig) {
     delete config.username;
     delete config.password;
 
-    return Promise.resolve(response);
+    return response;
   };
 
   const getAuthToken = () =>
@@ -63,7 +63,7 @@ export default function session(sessionConfig) {
       .then(response => {
         authRenewRequest = null;
 
-        return Promise.resolve(response);
+        return response;
       });
     }
 

@@ -14,7 +14,7 @@ const getFirst = (listResult) => {
   const list = listResult.data['ns2:abstract-common-list'];
   const uri = (list.itemsInPage > 0) ? list['list-item'][0].uri : null;
 
-  return Promise.resolve(uri);
+  return uri;
 };
 
 session.login()
@@ -23,7 +23,7 @@ session.login()
   .then(listResult => log('found items', listResult))
   .then(listResult => getFirst(listResult))
   .then(uri => log('found first item', uri))
-  .then(uri => (uri ? session.read(uri) : Promise.resolve(null)))
+  .then(uri => (uri ? session.read(uri) : null))
   .then(result => log('retrieved record', result))
   .then(() => session.logout())
   .then(() => log('logged out'))
