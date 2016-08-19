@@ -2,18 +2,18 @@
 
 import { authTokens, storeKey } from './tokenUtils';
 
-export default function localStorageTokenStore(username, url) {
+export default function localStorageTokenStore(clientId, url, username) {
   return {
     store(auth) {
       authTokens().forEach(token =>
-        localStorage.setItem(storeKey(token, username, url), auth[token]));
+        localStorage.setItem(storeKey(clientId, url, username, token), auth[token]));
     },
 
     fetch() {
       const auth = {};
 
       authTokens().forEach(token => {
-        auth[token] = localStorage.getItem(storeKey(token, username, url));
+        auth[token] = localStorage.getItem(storeKey(clientId, url, username, token));
       });
 
       return auth;
@@ -21,7 +21,7 @@ export default function localStorageTokenStore(username, url) {
 
     clear() {
       authTokens().forEach(token =>
-        localStorage.removeItem(storeKey(token, username, url)));
+        localStorage.removeItem(storeKey(clientId, url, username, token)));
     },
   };
 }

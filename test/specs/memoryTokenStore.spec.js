@@ -4,7 +4,8 @@ import memoryTokenStore from '../../src/memoryTokenStore';
 chai.should();
 
 describe('memoryTokenStore', () => {
-  const store = memoryTokenStore('user@xyz.com', 'http://collectionspace.org');
+  const storeParams = ['client-id', 'http://collectionspace.org', 'user@xyz.com'];
+  const store = memoryTokenStore(...storeParams);
 
   const auth = {
     accessToken: 'a123',
@@ -45,7 +46,7 @@ describe('memoryTokenStore', () => {
     });
 
     it('should find stored tokens from any instance', () => {
-      const newStore = memoryTokenStore('user@xyz.com', 'http://collectionspace.org');
+      const newStore = memoryTokenStore(...storeParams);
 
       newStore.fetch().should.deep.equal({
         accessToken: 'A456',

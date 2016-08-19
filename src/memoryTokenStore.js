@@ -2,11 +2,11 @@ import { authTokens, storeKey } from './tokenUtils';
 
 const tokens = {};
 
-export default function memoryTokenStore(username, url) {
+export default function memoryTokenStore(clientId, url, username) {
   return {
     store(auth) {
       authTokens().forEach(token => {
-        tokens[storeKey(token, username, url)] = auth[token];
+        tokens[storeKey(clientId, url, username, token)] = auth[token];
       });
     },
 
@@ -14,7 +14,7 @@ export default function memoryTokenStore(username, url) {
       const auth = {};
 
       authTokens().forEach(token => {
-        auth[token] = tokens[storeKey(token, username, url)];
+        auth[token] = tokens[storeKey(clientId, url, username, token)];
       });
 
       return auth;
@@ -22,7 +22,7 @@ export default function memoryTokenStore(username, url) {
 
     clear() {
       authTokens().forEach(token => {
-        delete tokens[storeKey(token, username, url)];
+        delete tokens[storeKey(clientId, url, username, token)];
       });
     },
   };

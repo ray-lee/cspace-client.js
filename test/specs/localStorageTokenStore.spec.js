@@ -15,7 +15,11 @@ describe('localStorageTokenStore', function suite() {
     }
   });
 
-  const store = localStorageTokenStore('user@xyz.com', 'http://collectionspace.org');
+  const storeParams = ['client-id', 'http://collectionspace.org', 'user@xyz.com'];
+  const store = localStorageTokenStore(...storeParams);
+
+  const accessTokenKey = storeKey(...storeParams, 'accessToken');
+  const refreshTokenKey = storeKey(...storeParams, 'refreshToken');
 
   const auth = {
     accessToken: 'a123',
@@ -31,25 +35,15 @@ describe('localStorageTokenStore', function suite() {
     it('should put tokens into local storage', () => {
       store.store(auth);
 
-      localStorage
-        .getItem(storeKey('accessToken', 'user@xyz.com', 'http://collectionspace.org'))
-        .should.equal('a123');
-
-      localStorage
-        .getItem(storeKey('refreshToken', 'user@xyz.com', 'http://collectionspace.org'))
-        .should.equal('r000');
+      localStorage.getItem(accessTokenKey).should.equal('a123');
+      localStorage.getItem(refreshTokenKey).should.equal('r000');
     });
 
     it('should overwrite existing tokens in local storage', () => {
       store.store(auth2);
 
-      localStorage
-        .getItem(storeKey('accessToken', 'user@xyz.com', 'http://collectionspace.org'))
-        .should.equal('A456');
-
-      localStorage
-        .getItem(storeKey('refreshToken', 'user@xyz.com', 'http://collectionspace.org'))
-        .should.equal('R999');
+      localStorage.getItem(accessTokenKey).should.equal('A456');
+      localStorage.getItem(refreshTokenKey).should.equal('R999');
     });
   });
 
@@ -60,16 +54,14 @@ describe('localStorageTokenStore', function suite() {
         refreshToken: 'R999',
       });
 
-      localStorage
-        .setItem(storeKey('accessToken', 'user@xyz.com', 'http://collectionspace.org'), 'aNEW');
+      localStorage.setItem(accessTokenKey, 'aNEW');
 
       store.fetch().should.deep.equal({
         accessToken: 'aNEW',
         refreshToken: 'R999',
       });
 
-      localStorage
-        .setItem(storeKey('refreshToken', 'user@xyz.com', 'http://collectionspace.org'), 'rNEW');
+      localStorage.setItem(refreshTokenKey, 'rNEW');
 
       store.fetch().should.deep.equal({
         accessToken: 'aNEW',
@@ -78,7 +70,7 @@ describe('localStorageTokenStore', function suite() {
     });
 
     it('should find stored tokens from any instance', () => {
-      const newStore = localStorageTokenStore('user@xyz.com', 'http://collectionspace.org');
+      const newStore = localStorageTokenStore(...storeParams);
 
       newStore.fetch().should.deep.equal({
         accessToken: 'aNEW',
@@ -96,13 +88,8 @@ describe('localStorageTokenStore', function suite() {
         refreshToken: null,
       });
 
-      expect(localStorage
-        .getItem(storeKey('accessToken', 'user@xyz.com', 'http://collectionspace.org')))
-        .to.equal(null);
-
-      expect(localStorage
-        .getItem(storeKey('refreshToken', 'user@xyz.com', 'http://collectionspace.org')))
-        .to.equal(null);
+      expect(localStorage.getItem(accessTokenKey)).to.equal(null);
+      expect(localStorage.getItem(refreshTokenKey)).to.equal(null);
     });
   });
 });

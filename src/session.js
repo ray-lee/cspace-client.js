@@ -9,7 +9,7 @@ const defaultSessionConfig = {
 
 export default function session(sessionConfig) {
   const config = Object.assign({}, defaultSessionConfig, sessionConfig);
-  const authStore = tokenStore(config.username, config.url);
+  const authStore = tokenStore(config.clientId, config.url, config.username);
 
   let authRenewRequest = null;
   let auth = authStore.fetch();
