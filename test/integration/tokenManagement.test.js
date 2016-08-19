@@ -63,6 +63,11 @@ describe(`token management on ${clientConfig.url}`, function suite() {
   it('does not attempt to issue multiple simultaneous token renewal requests', () => {
     const newTokens = {};
 
+    // Simulate three requests being sent in the same tick when the access token is expired.
+    // This should result in three failed initial requests, but there should only be a single
+    // token renewal request, not three different ones. The result should be that all three
+    // requests will be retried with the same new token, not three different new tokens.
+
     return Promise.all([
       session.read(`reject/${accessToken}`).should.eventually
         .be.fulfilled
