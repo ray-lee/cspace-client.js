@@ -11,8 +11,8 @@ export default function session(sessionConfig) {
   const config = Object.assign({}, defaultSessionConfig, sessionConfig);
   const authStore = tokenStore(config.clientId, config.url, config.username);
 
-  let authRenewRequest = null;
   let auth = authStore.fetch();
+  let authRequestPending = null;
 
   const cs = cspace({
     url: urljoin(config.url, 'cspace-services'),
@@ -41,34 +41,46 @@ export default function session(sessionConfig) {
     return response;
   };
 
-  const getAuthToken = () =>
-    csAuth.create('token', {
-      data: {
-        grant_type: 'password',
-        username: config.username,
-        password: config.password,
-      },
-    })
-    .then(response => storeToken(response));
+  const login = () => {
+    if (authRequestPending) {
+      return authRequestPending;
+    }
 
-  const renewAuthToken = () => {
-    if (!authRenewRequest) {
-      authRenewRequest = csAuth.create('token', {
-        data: {
-          grant_type: 'refresh_token',
-          refresh_token: auth.refreshToken,
-        },
-      })
+    const data = auth.refreshToken ? {
+      grant_type: 'refresh_token',
+      refresh_token: auth.refreshToken,
+    } : {
+      grant_type: 'password',
+      username: config.username,
+      password: config.password,
+    };
+
+    authRequestPending = csAuth.create('token', { data })
       .then(response => storeToken(response))
       .then(response => {
-        authRenewRequest = null;
+        authRequestPending = null;
 
         return response;
       });
-    }
 
-    return authRenewRequest;
+    return authRequestPending;
   };
+
+  const logout = () =>
+    new Promise(resolve => {
+      // Currently this does not need to be async, but it might in the future.
+      // For now just force async with setTimeout.
+
+      setTimeout(() => {
+        delete config.username;
+        delete config.password;
+
+        auth = {};
+        authStore.clear();
+
+        resolve();
+      });
+    });
 
   const tokenizeRequest = (requestConfig) =>
     Object.assign({}, requestConfig, { token: auth.accessToken });
@@ -77,9 +89,9 @@ export default function session(sessionConfig) {
     cs[operation](resource, tokenizeRequest(requestConfig))
       .catch(error => {
         if (error.response.status === 401 && auth.refreshToken) {
-          // Renew the access token, and retry the request.
+          // Refresh the access token and retry
 
-          return renewAuthToken()
+          return login()
             .then(() => cs[operation](resource, tokenizeRequest(requestConfig)));
         }
 
@@ -87,26 +99,11 @@ export default function session(sessionConfig) {
       });
 
   return {
+    login,
+    logout,
+
     config() {
       return config;
-    },
-
-    login() {
-      return getAuthToken();
-    },
-
-    logout() {
-      return new Promise(resolve => {
-        // Currently this does not need to be async, but it might in the future.
-        // For now just force async with setTimeout.
-
-        setTimeout(() => {
-          auth = {};
-          authStore.clear();
-
-          resolve();
-        });
-      });
     },
 
     create: tokenized('create'),
