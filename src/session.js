@@ -41,7 +41,7 @@ export default function session(sessionConfig) {
     return response;
   };
 
-  const authRequest = (data) => {
+  const authRequest = data => {
     if (authRequestPending) {
       return authRequestPending;
     }
