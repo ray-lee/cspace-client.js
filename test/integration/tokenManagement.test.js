@@ -55,7 +55,7 @@ describe(`token management on ${clientConfig.url}`, function suite() {
         accessToken = newToken;
       }));
 
-  it('presents the second token to perform operations on resources', () =>
+  it('presents the new token to perform operations on resources', () =>
     session.read('something').should.eventually
       .be.fulfilled
       .and.have.deep.property('data.presentedToken', accessToken));
@@ -102,9 +102,15 @@ describe(`token management on ${clientConfig.url}`, function suite() {
     });
   });
 
-  it('presents the third token to perform operations on resources', () =>
+
+  it('presents the new token to perform operations on resources', () =>
     session.read('something').should.eventually
       .be.fulfilled
       .and.have.deep.property('data.presentedToken', accessToken));
+
+  it('fails if login() is called again', () =>
+    session.login().should.eventually
+      .be.rejected
+      .and.have.deep.property('response.status', 400));
 });
 

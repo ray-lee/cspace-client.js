@@ -26,23 +26,60 @@ let tokenNum = 0;
  */
 module.exports = function cspaceServerMiddleware(req, res, next) {
   if (req.method === 'POST' && req.url === '/cspace-services/oauth/token') {
-    // On any POST to the /oauth/token endpoint, return a new set of tokens (after a delay). This
-    // simulates a successful OAuth2 password credentials grant or refresh token grant.
+    // Simulate an OAuth2 password credentials grant or refresh token grant on a POST to the token
+    // endpoint.
 
-    setTimeout(() => {
-      sendJson(req, res, {
-        statusCode: 200,
-        body: {
-          access_token: `access_${tokenNum}`,
-          refresh_token: `refresh_${tokenNum}`,
-        },
-        headers: {
-          'Cache-Control': 'no-store',
-        },
-      });
+    // If the grant type is 'password', a token is granted as long as the username and password
+    // are truthy. If the grant type is 'refresh_token', a token is granted as long as the refresh
+    // token is truthy. An artificial delay is introduced before replying, in order to make testing
+    // of multiple simultaneous requests easy.
 
-      tokenNum += 1;
-    }, delay);
+    // The granted tokens are returned along with the request body so that it can be verified.
+
+    let accept = true;
+    const grantType = req.body.grant_type;
+
+    if (grantType === 'password') {
+      const username = req.body.username;
+      const password = req.body.password;
+
+      accept = username && password;
+    } else if (grantType === 'refresh_token') {
+      const token = req.body.refresh_token;
+
+      accept = !!token;
+    }
+
+    let reply;
+
+    if (accept) {
+      reply = () => {
+        sendJson(req, res, {
+          statusCode: 200,
+          body: {
+            access_token: `access_${tokenNum}`,
+            refresh_token: `refresh_${tokenNum}`,
+            request_body: req.body,
+          },
+          headers: {
+            'Cache-Control': 'no-store',
+          },
+        });
+
+        tokenNum += 1;
+      };
+    } else {
+      reply = () => {
+        sendJson(req, res, {
+          statusCode: 400,
+          body: {
+            request_body: req.body,
+          },
+        });
+      };
+    }
+
+    setTimeout(reply, delay);
   } else if (req.url.startsWith('/cspace-services/reject/')) {
     // On any request to the /reject/${token} endpoint, return 401 if the token specified in the
     // URL matches the bearer token supplied in the Authorization header. This simulates an

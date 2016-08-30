@@ -2,6 +2,7 @@
 /* eslint no-console: "off" */
 
 const webpack = require('webpack');
+const bodyParser = require('body-parser');
 const cspaceServerMiddleware = require('./test/stubs/cspaceServerMiddleware');
 
 const sauceLaunchers = {
@@ -169,11 +170,19 @@ module.exports = function karma(config) {
 
     // Add middleware to stub the cspace services layer.
 
-    middleware: ['cspaceServerMiddleware'],
+    middleware: [
+      'bodyParserMiddleware',
+      'cspaceServerMiddleware',
+    ],
 
     plugins: [
       ...config.plugins,
 
+      {
+        'middleware:bodyParserMiddleware': ['factory', function create() {
+          return bodyParser.urlencoded({ extended: true });
+        }],
+      },
       {
         'middleware:cspaceServerMiddleware': ['factory', function create() {
           return cspaceServerMiddleware;

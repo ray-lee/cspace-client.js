@@ -25,7 +25,7 @@ export default function session(sessionConfig) {
     type: 'application/x-www-form-urlencoded',
   });
 
-  const storeToken = (response) => {
+  const storeToken = response => {
     auth = {
       accessToken: response.data.access_token,
       refreshToken: response.data.refresh_token,
@@ -41,19 +41,10 @@ export default function session(sessionConfig) {
     return response;
   };
 
-  const login = () => {
+  const authRequest = (data) => {
     if (authRequestPending) {
       return authRequestPending;
     }
-
-    const data = auth.refreshToken ? {
-      grant_type: 'refresh_token',
-      refresh_token: auth.refreshToken,
-    } : {
-      grant_type: 'password',
-      username: config.username,
-      password: config.password,
-    };
 
     authRequestPending = csAuth.create('token', { data })
       .then(response => storeToken(response))
@@ -65,6 +56,17 @@ export default function session(sessionConfig) {
 
     return authRequestPending;
   };
+
+  const login = () => authRequest({
+    grant_type: 'password',
+    username: config.username,
+    password: config.password,
+  });
+
+  const refresh = () => authRequest({
+    grant_type: 'refresh_token',
+    refresh_token: auth.refreshToken,
+  });
 
   const logout = () =>
     new Promise(resolve => {
@@ -82,16 +84,16 @@ export default function session(sessionConfig) {
       });
     });
 
-  const tokenizeRequest = (requestConfig) =>
+  const tokenizeRequest = requestConfig =>
     Object.assign({}, requestConfig, { token: auth.accessToken });
 
-  const tokenized = (operation) => (resource, requestConfig) =>
+  const tokenized = operation => (resource, requestConfig) =>
     cs[operation](resource, tokenizeRequest(requestConfig))
       .catch(error => {
         if (error.response.status === 401 && auth.refreshToken) {
-          // Refresh the access token and retry
+          // Refresh the access token and retry.
 
-          return login()
+          return refresh()
             .then(() => cs[operation](resource, tokenizeRequest(requestConfig)));
         }
 
