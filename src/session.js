@@ -9,10 +9,23 @@ const defaultSessionConfig = {
 
 export default function session(sessionConfig) {
   const config = Object.assign({}, defaultSessionConfig, sessionConfig);
-  const authStore = tokenStore(config.clientId, config.url, config.username);
+  const authStore = tokenStore(config.clientId, config.url);
 
-  let auth = authStore.fetch();
   let authRequestPending = null;
+  let auth = authStore.fetch() || {};
+
+  if (config.username) {
+    // The username for this session was specified, and differs from the stored auth user.
+    // Don't use the stored auth.
+
+    if (config.username !== auth.username) {
+      auth = {};
+    }
+  } else if (auth.username) {
+    // The username for this session was not specified. Use the stored auth user, if one exists.
+
+    config.username = auth.username;
+  }
 
   const cs = cspace({
     url: urljoin(config.url, 'cspace-services'),
@@ -27,15 +40,15 @@ export default function session(sessionConfig) {
 
   const storeToken = response => {
     auth = {
+      username: config.username,
       accessToken: response.data.access_token,
       refreshToken: response.data.refresh_token,
     };
 
     authStore.store(auth);
 
-    // We have tokens, so the username/password can be discarded.
+    // We have tokens, so the user password can be discarded.
 
-    delete config.username;
     delete config.password;
 
     return response;
@@ -105,7 +118,12 @@ export default function session(sessionConfig) {
     logout,
 
     config() {
-      return config;
+      const configCopy = Object.assign({}, config);
+      
+      delete configCopy.clientSecret;
+      delete configCopy.password;
+
+      return configCopy;
     },
 
     create: tokenized('create'),

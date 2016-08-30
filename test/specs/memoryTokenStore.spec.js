@@ -1,18 +1,22 @@
 import chai from 'chai';
 import memoryTokenStore from '../../src/memoryTokenStore';
 
+const expect = chai.expect;
+
 chai.should();
 
 describe('memoryTokenStore', () => {
-  const storeParams = ['client-id', 'http://collectionspace.org', 'user@xyz.com'];
+  const storeParams = ['client-id', 'http://collectionspace.org'];
   const store = memoryTokenStore(...storeParams);
 
   const auth = {
+    username: 'user@xyz.com',
     accessToken: 'a123',
     refreshToken: 'r000',
   };
 
   const auth2 = {
+    username: 'user@xyz.com',
     accessToken: 'A456',
     refreshToken: 'R999',
   };
@@ -22,6 +26,7 @@ describe('memoryTokenStore', () => {
       store.store(auth);
 
       store.fetch().should.deep.equal({
+        username: 'user@xyz.com',
         accessToken: 'a123',
         refreshToken: 'r000',
       });
@@ -31,6 +36,7 @@ describe('memoryTokenStore', () => {
       store.store(auth2);
 
       store.fetch().should.deep.equal({
+        username: 'user@xyz.com',
         accessToken: 'A456',
         refreshToken: 'R999',
       });
@@ -40,6 +46,7 @@ describe('memoryTokenStore', () => {
   describe('fetch()', () => {
     it('should retrieve tokens', () => {
       store.fetch().should.deep.equal({
+        username: 'user@xyz.com',
         accessToken: 'A456',
         refreshToken: 'R999',
       });
@@ -49,6 +56,7 @@ describe('memoryTokenStore', () => {
       const newStore = memoryTokenStore(...storeParams);
 
       newStore.fetch().should.deep.equal({
+        username: 'user@xyz.com',
         accessToken: 'A456',
         refreshToken: 'R999',
       });
@@ -59,10 +67,7 @@ describe('memoryTokenStore', () => {
     it('should remove tokens', () => {
       store.clear();
 
-      store.fetch().should.deep.equal({
-        accessToken: undefined,
-        refreshToken: undefined,
-      });
+      expect(store.fetch()).to.equal(undefined);
     });
   });
 });

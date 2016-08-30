@@ -36,7 +36,7 @@ module.exports = function cspaceServerMiddleware(req, res, next) {
 
     // The granted tokens are returned along with the request body so that it can be verified.
 
-    let accept = true;
+    let accept = false;
     const grantType = req.body.grant_type;
 
     if (grantType === 'password') {
@@ -105,18 +105,32 @@ module.exports = function cspaceServerMiddleware(req, res, next) {
       },
     });
   } else if (req.url.startsWith('/cspace-services/')) {
-    // On any other request, return the bearer token that was supplied in the Authorization header.
-    // This may be used by a test to verify the expected token was sent.
+    // On any other request, expect a bearer token in the Authorization header, and return it
+    // so that it may be verified. Return 400 if there isn't one.
 
-    sendJson(req, res, {
-      statusCode: 200,
-      body: {
-        presentedToken: req.headers.authorization.substring('Bearer '.length),
-      },
-      headers: {
-        'Cache-Control': 'no-store',
-      },
-    });
+    const authHeader = req.headers.authorization;
+    const presentedToken = authHeader.startsWith('Bearer ')
+      ? authHeader.substring('Bearer '.length)
+      : null;
+
+    if (presentedToken) {
+      sendJson(req, res, {
+        statusCode: 200,
+        body: {
+          presentedToken: req.headers.authorization.substring('Bearer '.length),
+        },
+        headers: {
+          'Cache-Control': 'no-store',
+        },
+      });
+    } else {
+      sendJson(req, res, {
+        statusCode: 400,
+        body: {
+          request_body: req.body,
+        },
+      });
+    }
   } else {
     // Not a cspace-services request. Forward it to the next middleware.
 

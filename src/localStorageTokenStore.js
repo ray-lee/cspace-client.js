@@ -1,27 +1,38 @@
-/* global localStorage */
+/* global localStorage, JSON */
 
-import { authTokens, storeKey } from './tokenUtils';
+const loadClientStorage = clientId =>
+  JSON.parse(localStorage.getItem(clientId));
 
-export default function localStorageTokenStore(clientId, url, username) {
+const saveClientStorage = (clientId, clientStorage) =>
+  localStorage.setItem(clientId, JSON.stringify(clientStorage));
+
+const withClientStorage = (clientId, callback) => {
+  const clientStorage = loadClientStorage(clientId);
+  const updatedClientStorage = callback(clientStorage);
+
+  saveClientStorage(clientId, updatedClientStorage);
+};
+
+export default function localStorageTokenStore(clientId, url) {
   return {
     store(auth) {
-      authTokens().forEach(token =>
-        localStorage.setItem(storeKey(clientId, url, username, token), auth[token]));
+      withClientStorage(clientId, clientStorage =>
+        Object.assign({}, clientStorage, {
+          [url]: auth,
+        }));
     },
 
     fetch() {
-      const auth = {};
+      const clientStorage = loadClientStorage(clientId);
 
-      authTokens().forEach(token => {
-        auth[token] = localStorage.getItem(storeKey(clientId, url, username, token));
-      });
-
-      return auth;
+      return clientStorage ? clientStorage[url] : null;
     },
 
     clear() {
-      authTokens().forEach(token =>
-        localStorage.removeItem(storeKey(clientId, url, username, token)));
+      withClientStorage(clientId, clientStorage =>
+        Object.assign({}, clientStorage, {
+          [url]: undefined,
+        }));
     },
   };
 }

@@ -1,29 +1,29 @@
-import { authTokens, storeKey } from './tokenUtils';
+const storage = {};
 
-const tokens = {};
-
-export default function memoryTokenStore(clientId, url, username) {
+export default function memoryTokenStore(clientId, url) {
   return {
     store(auth) {
-      authTokens().forEach(token => {
-        tokens[storeKey(clientId, url, username, token)] = auth[token];
-      });
+      let clientStorage = storage.clientId;
+
+      if (!clientStorage) {
+        clientStorage = storage.clientId = {};
+      }
+
+      clientStorage[url] = auth;
     },
 
     fetch() {
-      const auth = {};
+      const clientStorage = storage.clientId;
 
-      authTokens().forEach(token => {
-        auth[token] = tokens[storeKey(clientId, url, username, token)];
-      });
-
-      return auth;
+      return clientStorage ? clientStorage[url] : null;
     },
 
     clear() {
-      authTokens().forEach(token => {
-        delete tokens[storeKey(clientId, url, username, token)];
-      });
+      const clientStorage = storage.clientId;
+
+      if (clientStorage) {
+        delete clientStorage[url];
+      }
     },
   };
 }

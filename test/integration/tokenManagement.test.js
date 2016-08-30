@@ -35,14 +35,22 @@ describe(`token management on ${clientConfig.url}`, function suite() {
       .be.fulfilled
       .and.have.deep.property('data.presentedToken', accessToken));
 
-  it('reuses the stored token in another session with the same url and user', () => {
-    const newSession = cspace.session({
-      username: sessionConfig.username,
-    });
+  it('reuses the stored token in a new session with no user', () => {
+    const newSession = cspace.session();
 
     return newSession.read('something').should.eventually
       .be.fulfilled
       .and.have.deep.property('data.presentedToken', accessToken);
+  });
+
+  it('does not reuse the stored token in a new session with a different user', () => {
+    const newSession = cspace.session({
+      username: 'somebody@collectionspace.org',
+    });
+
+    return newSession.read('something').should.eventually
+      .be.rejected
+      .and.have.deep.property('response.status', 400);
   });
 
   it('transparently renews an expired token', () =>
