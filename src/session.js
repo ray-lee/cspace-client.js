@@ -80,7 +80,7 @@ export default function session(sessionConfig) {
         auth = {};
         authStore.clear();
 
-        resolve();
+        resolve({});
       });
     });
 
