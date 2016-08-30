@@ -268,7 +268,8 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
 
   it('can log out as admin', () =>
     adminSession.logout().should.eventually
-      .be.fulfilled);
+      .be.fulfilled
+      .and.be.an('object'));
 
   it('cannot list records as admin after logging out', function test() {
     return adminSession.read('collectionobjects').should.eventually
@@ -284,7 +285,12 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
   it('can log out as reader', () =>
     readerSession.logout().should.eventually
       .be.fulfilled
-      .and.be.ok);
+      .and.be.an('object'));
+
+  it('can log out multiple times', () =>
+    readerSession.logout().should.eventually
+      .be.fulfilled
+      .and.be.an('object'));
 
   it('cannot list records as reader after logging out', function test() {
     return readerSession.read('collectionobjects').should.eventually
