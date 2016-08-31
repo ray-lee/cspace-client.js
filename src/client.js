@@ -11,7 +11,7 @@ export default function client(clientConfig) {
   return {
     config() {
       const configCopy = Object.assign({}, config);
-      
+
       delete configCopy.clientSecret;
 
       return configCopy;

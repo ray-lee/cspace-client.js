@@ -119,7 +119,7 @@ export default function session(sessionConfig) {
 
     config() {
       const configCopy = Object.assign({}, config);
-      
+
       delete configCopy.clientSecret;
       delete configCopy.password;
 
