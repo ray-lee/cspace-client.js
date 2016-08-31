@@ -13,7 +13,6 @@ describe('client', () => {
     it('should set default options', () => {
       client().config().should.deep.equal({
         clientId: 'cspace-ui',
-        clientSecret: '',
       });
     });
 
@@ -25,7 +24,19 @@ describe('client', () => {
 
       client(config).config().should.deep.equal({
         clientId: 'my-id',
+      });
+    });
+  });
+
+  describe('#config()', () => {
+    it('should omit the password', () => {
+      const config = {
+        clientId: 'my-id',
         clientSecret: 'topsecret',
+      };
+
+      client(config).config().should.deep.equal({
+        clientId: 'my-id',
       });
     });
   });

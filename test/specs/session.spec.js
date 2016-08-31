@@ -15,7 +15,6 @@ describe('session', () => {
     it('should set default options', () => {
       session().config().should.deep.equal({
         username: '',
-        password: '',
       });
     });
 
@@ -27,7 +26,19 @@ describe('session', () => {
 
       session(config).config().should.deep.equal({
         username: 'user@collectionspace.org',
+      });
+    });
+  });
+
+  describe('#config()', () => {
+    it('should omit the password', () => {
+      const config = {
+        username: 'user@collectionspace.org',
         password: 'secret',
+      };
+
+      session(config).config().should.deep.equal({
+        username: 'user@collectionspace.org',
       });
     });
   });
