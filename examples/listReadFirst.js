@@ -1,3 +1,7 @@
+/**
+ * List all object records, and retrieve the first.
+ */
+
 import client from '../src';
 import log from './helpers/log';
 
