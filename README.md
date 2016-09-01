@@ -1,6 +1,6 @@
 # cspace-client
 
-[![npm package](https://img.shields.io/npm/v/cspace-client.svg)](https://www.npmjs.com/package/cspace-api)
+[![npm package](https://img.shields.io/npm/v/cspace-client.svg)](https://www.npmjs.com/package/cspace-client)
 [![Build Status](https://travis-ci.org/collectionspace/cspace-client.js.svg?branch=master)](https://travis-ci.org/collectionspace/cspace-client.js)
 [![Coverage Status](https://coveralls.io/repos/github/collectionspace/cspace-client.js/badge.svg?branch=master)](https://coveralls.io/github/collectionspace/cspace-client.js?branch=master)
 
