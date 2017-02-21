@@ -49,7 +49,7 @@ session.login()
   .then(() => log(`found ${emptyVocabularyCsids.length} empty vocabularies`, emptyVocabularyCsids))
   .then(() =>
     Promise.all(
-      emptyVocabularyCsids.map(csid => 
+      emptyVocabularyCsids.map(csid =>
         session.delete(`vocabularies/${csid}`)
           .then(() => log(`deleted ${csid}`))
       )
