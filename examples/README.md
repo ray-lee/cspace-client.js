@@ -13,3 +13,5 @@ $ ../node_modules/.bin/babel-node listReadFirst.js
 The following examples are included:
 
 - [listReadFirst.js](./listReadFirst.js) - List all of the object records stored in CollectionSpace, and retrieve the first.
+- [deleteEmptyVocabs.js](./deleteEmptyVocabs.js) - Find all vocabularies (dynamic term lists) in CollectionSpace that have no terms, and delete them.
+ 
