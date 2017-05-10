@@ -84,7 +84,7 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
     return adminSession.create('collectionobjects', config).should.eventually
       .include({ status: 201 })
       .and.have.deep.property('headers.location').that.is.ok
-      .then(location => {
+      .then((location) => {
         objectCsid = location.substring(location.lastIndexOf('/') + 1);
       });
   });

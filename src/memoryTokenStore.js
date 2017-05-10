@@ -3,26 +3,26 @@ const storage = {};
 export default function memoryTokenStore(clientId, url) {
   return {
     store(auth) {
-      let clientStorage = storage.clientId;
+      let clientData = storage.clientId;
 
-      if (!clientStorage) {
-        clientStorage = storage.clientId = {};
+      if (!clientData) {
+        clientData = storage.clientId = {};
       }
 
-      clientStorage[url] = auth;
+      clientData[url] = auth;
     },
 
     fetch() {
-      const clientStorage = storage.clientId;
+      const clientData = storage.clientId;
 
-      return clientStorage ? clientStorage[url] : null;
+      return clientData ? clientData[url] : undefined;
     },
 
     clear() {
-      const clientStorage = storage.clientId;
+      const clientData = storage.clientId;
 
-      if (clientStorage) {
-        delete clientStorage[url];
+      if (clientData) {
+        delete clientData[url];
       }
     },
   };

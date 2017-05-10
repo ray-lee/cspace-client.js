@@ -2,7 +2,7 @@
 
 import chai from 'chai';
 import localStorageTokenStore from '../../src/localStorageTokenStore';
-import { isLocalStorageAvailable } from '../../src/tokenUtils';
+import { isLocalStorageAvailable, storageKey } from '../../src/tokenHelpers';
 
 const expect = chai.expect;
 
@@ -36,13 +36,24 @@ describe('localStorageTokenStore', function suite() {
     it('should put tokens into local storage', () => {
       store.store(auth);
 
-      JSON.parse(localStorage.getItem(clientId))[url].should.deep.equal(auth);
+      JSON.parse(localStorage.getItem(storageKey))[clientId][url].should.deep.equal(auth);
     });
 
     it('should overwrite existing tokens in local storage', () => {
       store.store(auth2);
 
-      JSON.parse(localStorage.getItem(clientId))[url].should.deep.equal(auth2);
+      JSON.parse(localStorage.getItem(storageKey))[clientId][url].should.deep.equal(auth2);
+    });
+
+    it('should not affect stored data for other client ids', () => {
+      localStorage.setItem(storageKey, JSON.stringify({
+        foo: 'bar',
+      }));
+
+      store.store(auth2);
+
+      JSON.parse(localStorage.getItem(storageKey))[clientId][url].should.deep.equal(auth2);
+      JSON.parse(localStorage.getItem(storageKey)).foo.should.equal('bar');
     });
   });
 

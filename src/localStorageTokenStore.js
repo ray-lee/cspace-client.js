@@ -1,38 +1,52 @@
 /* global localStorage, JSON */
 
-const loadClientStorage = clientId =>
-  JSON.parse(localStorage.getItem(clientId));
+import { storageKey } from './tokenHelpers';
 
-const saveClientStorage = (clientId, clientStorage) =>
-  localStorage.setItem(clientId, JSON.stringify(clientStorage));
+const loadClientData = (clientId) => {
+  const data = JSON.parse(localStorage.getItem(storageKey));
 
-const withClientStorage = (clientId, callback) => {
-  const clientStorage = loadClientStorage(clientId);
-  const updatedClientStorage = callback(clientStorage);
+  return (data ? data[clientId] : undefined);
+};
 
-  saveClientStorage(clientId, updatedClientStorage);
+const saveClientData = (clientId, clientData) => {
+  const data = JSON.parse(localStorage.getItem(storageKey));
+
+  const updatedData = Object.assign({}, data, {
+    [clientId]: clientData,
+  });
+
+  localStorage.setItem(storageKey, JSON.stringify(updatedData));
+};
+
+const withClientData = (clientId, update) => {
+  const clientData = loadClientData(clientId);
+  const updatedClientData = update(clientData);
+
+  saveClientData(clientId, updatedClientData);
 };
 
 export default function localStorageTokenStore(clientId, url) {
   return {
     store(auth) {
-      withClientStorage(clientId, clientStorage =>
-        Object.assign({}, clientStorage, {
+      withClientData(clientId, clientData =>
+        Object.assign({}, clientData, {
           [url]: auth,
-        }));
+        })
+      );
     },
 
     fetch() {
-      const clientStorage = loadClientStorage(clientId);
+      const clientData = loadClientData(clientId);
 
-      return clientStorage ? clientStorage[url] : null;
+      return (clientData ? clientData[url] : undefined);
     },
 
     clear() {
-      withClientStorage(clientId, clientStorage =>
-        Object.assign({}, clientStorage, {
+      withClientData(clientId, clientData =>
+        Object.assign({}, clientData, {
           [url]: undefined,
-        }));
+        })
+      );
     },
   };
 }

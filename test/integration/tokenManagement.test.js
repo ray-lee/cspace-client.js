@@ -26,7 +26,7 @@ describe(`token management on ${clientConfig.url}`, function suite() {
     session.login().should.eventually
       .be.fulfilled
       .and.have.deep.property('data.access_token')
-      .then(token => {
+      .then((token) => {
         accessToken = token;
       }));
 
@@ -57,7 +57,7 @@ describe(`token management on ${clientConfig.url}`, function suite() {
     session.read(`reject/${accessToken}`).should.eventually
       .be.fulfilled
       .and.have.deep.property('data.presentedToken')
-      .then(newToken => {
+      .then((newToken) => {
         newToken.should.not.equal(accessToken);
 
         accessToken = newToken;
@@ -80,7 +80,7 @@ describe(`token management on ${clientConfig.url}`, function suite() {
       session.read(`reject/${accessToken}`).should.eventually
         .be.fulfilled
         .and.have.deep.property('data.presentedToken')
-        .then(newToken => {
+        .then((newToken) => {
           newToken.should.not.equal(accessToken);
           newTokens[newToken] = true;
         }),
@@ -88,7 +88,7 @@ describe(`token management on ${clientConfig.url}`, function suite() {
       session.read(`reject/${accessToken}`).should.eventually
         .be.fulfilled
         .and.have.deep.property('data.presentedToken')
-        .then(newToken => {
+        .then((newToken) => {
           newToken.should.not.equal(accessToken);
           newTokens[newToken] = true;
         }),
@@ -96,7 +96,7 @@ describe(`token management on ${clientConfig.url}`, function suite() {
       session.read(`reject/${accessToken}`).should.eventually
         .be.fulfilled
         .and.have.deep.property('data.presentedToken')
-        .then(newToken => {
+        .then((newToken) => {
           newToken.should.not.equal(accessToken);
           newTokens[newToken] = true;
         }),

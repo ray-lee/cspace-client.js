@@ -1,6 +1,6 @@
 {
   "name": "cspace-client",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "CollectionSpace client for browsers and Node.js",
   "author": "Ray Lee <rhlee@berkeley.edu>",
   "license": "ECL-2.0",
@@ -32,8 +32,8 @@
     "test-specs": "npm run test-node-specs && npm run test-browser-specs",
     "test-integration": "npm run test-node-integration && npm run test-browser-integration",
     "test-browser": "cross-env NODE_ENV=test karma start --singleRun=true",
-    "test-browser-specs": "cross-env NODE_ENV=test karma start --singleRun=true --dir=specs",
-    "test-browser-integration": "cross-env NODE_ENV=test karma start --singleRun=true --dir=integration",
+    "test-browser-specs": "cross-env NODE_ENV=test karma start --singleRun=true --dir=test/specs",
+    "test-browser-integration": "cross-env NODE_ENV=test karma start --singleRun=true --dir=test/integration",
     "test-node": "cross-env NODE_ENV=test nyc mocha --compilers js:babel-register --require test/stubs/cspaceServer --recursive test",
     "test-node-specs": "cross-env NODE_ENV=test nyc mocha --compilers js:babel-register --require test/stubs/cspaceServer --recursive test/specs",
     "test-node-integration": "cross-env NODE_ENV=test nyc mocha --compilers js:babel-register --require test/stubs/cspaceServer --recursive test/integration"
@@ -52,7 +52,7 @@
     "cross-env": "^2.0.0",
     "documentation": "^4.0.0-beta9",
     "eslint": "^3.2.2",
-    "eslint-config-airbnb": "^10.0.0",
+    "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-import": "^1.12.0",
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-react": "^6.0.0",

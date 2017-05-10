@@ -1,9 +1,9 @@
 import chai from 'chai';
-import { isLocalStorageAvailable } from '../../src/tokenUtils';
+import { isLocalStorageAvailable } from '../../src/tokenHelpers';
 
 chai.should();
 
-describe('storageUtils', () => {
+describe('storageHelpers', () => {
   const inNode = (typeof window === 'undefined');
 
   describe('isLocalStorageAvailable()', () => {

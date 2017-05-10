@@ -38,7 +38,7 @@ export default function session(sessionConfig) {
     type: 'application/x-www-form-urlencoded',
   });
 
-  const storeToken = response => {
+  const storeToken = (response) => {
     auth = {
       username: config.username,
       accessToken: response.data.access_token,
@@ -54,14 +54,14 @@ export default function session(sessionConfig) {
     return response;
   };
 
-  const authRequest = data => {
+  const authRequest = (data) => {
     if (authRequestPending) {
       return authRequestPending;
     }
 
     authRequestPending = csAuth.create('token', { data })
       .then(response => storeToken(response))
-      .then(response => {
+      .then((response) => {
         authRequestPending = null;
 
         return response;
@@ -82,9 +82,11 @@ export default function session(sessionConfig) {
   });
 
   const logout = () =>
-    new Promise(resolve => {
-      // Currently this does not need to be async, but it might in the future.
-      // For now just force async with setTimeout.
+    new Promise((resolve) => {
+      // Log out may in the future require an async call to the REST API (for example, to revoke
+      // tokens immediately). Currently it's a client-side only operation that can be done
+      // synchronously, but to be consistent with a future async operation, we'll simulate it with
+      // setTimeout.
 
       setTimeout(() => {
         delete config.username;
@@ -102,7 +104,7 @@ export default function session(sessionConfig) {
 
   const tokenized = operation => (resource, requestConfig) =>
     cs[operation](resource, tokenizeRequest(requestConfig))
-      .catch(error => {
+      .catch((error) => {
         if (error.response.status === 401 && auth.refreshToken) {
           // Refresh the access token and retry.
 
