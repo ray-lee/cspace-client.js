@@ -105,7 +105,7 @@ export default function session(sessionConfig) {
   const tokenized = operation => (resource, requestConfig) =>
     cs[operation](resource, tokenizeRequest(requestConfig))
       .catch((error) => {
-        if (error.response.status === 401 && auth.refreshToken) {
+        if (error.response && error.response.status === 401 && auth.refreshToken) {
           // Refresh the access token and retry.
 
           return refresh()
