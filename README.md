@@ -6,7 +6,7 @@
 
 A CollectionSpace client, built on the [cspace-api](https://github.com/collectionspace/cspace-api.js) library.
 
-Release 4.5 of the CollectionSpace services API, which is currently under development, is required. This library is not compatible with releases 4.4 and earlier.
+Release 4.5 of the CollectionSpace services API is required. This library is not compatible with releases 4.4 and earlier.
 
 ## Features
 
