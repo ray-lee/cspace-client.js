@@ -131,11 +131,15 @@ module.exports = function karma(config) {
     webpack: {
       devtool: 'cheap-module-inline-source-map',
       module: {
-        loaders: [
+        rules: [
           {
             test: /\.js$/,
             exclude: /node_modules/,
-            loader: 'babel',
+            use: [
+              {
+                loader: 'babel-loader',
+              },
+            ],
           },
         ],
       },
