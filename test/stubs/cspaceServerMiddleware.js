@@ -109,7 +109,8 @@ module.exports = function cspaceServerMiddleware(req, res, next) {
     // so that it may be verified. Return 400 if there isn't one.
 
     const authHeader = req.headers.authorization;
-    const presentedToken = authHeader.startsWith('Bearer ')
+
+    const presentedToken = (authHeader && authHeader.startsWith('Bearer '))
       ? authHeader.substring('Bearer '.length)
       : null;
 
