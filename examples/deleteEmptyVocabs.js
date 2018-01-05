@@ -6,7 +6,7 @@ import client from '../src';
 import log from './helpers/log';
 
 const cspace = client({
-  url: 'http://nightly.collectionspace.org:8180',
+  url: 'https://nightly.collectionspace.org',
 });
 
 const session = cspace.session({

@@ -5,8 +5,16 @@ import client from '../../src/client';
 chai.use(chaiAsPromised);
 chai.should();
 
+const errors = [];
+
 const clientConfig = {
   url: 'http://nightly.collectionspace.org:8180',
+
+  onError: (error) => {
+    errors.push(error);
+
+    return Promise.reject(error);
+  },
 };
 
 const adminSessionConfig = {
@@ -37,13 +45,19 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
   it('cannot list records as admin before logging in', function test() {
     return adminSession.read('collectionobjects').should.eventually
       .be.rejected
-      .and.have.deep.property('response.status', 401);
+      .and.have.deep.property('response.status', 401)
+      .then(() => {
+        errors.pop().should.have.deep.property('response.status', 401);
+      });
   });
 
   it('cannot list records as reader before logging in', function test() {
     return readerSession.read('collectionobjects').should.eventually
       .be.rejected
-      .and.have.deep.property('response.status', 401);
+      .and.have.deep.property('response.status', 401)
+      .then(() => {
+        errors.pop().should.have.deep.property('response.status', 401);
+      });
   });
 
   it('can log in as admin', () =>
@@ -112,7 +126,10 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
 
     return readerSession.create('collectionobjects', config).should.eventually
       .be.rejected
-      .and.have.deep.property('response.status', 403);
+      .and.have.deep.property('response.status', 403)
+      .then(() => {
+        errors.pop().should.have.deep.property('response.status', 403);
+      });
   });
 
   it('can find the record as admin', function test() {
@@ -243,9 +260,11 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
 
     return readerSession.update(`collectionobjects/${objectCsid}`, config).should.eventually
       .be.rejected
-      .and.have.deep.property('response.status', 403);
+      .and.have.deep.property('response.status', 403)
+      .then(() => {
+        errors.pop().should.have.deep.property('response.status', 403);
+      });
   });
-
 
   it('can delete the record as admin', function test() {
     if (!objectCsid || !adminLoggedIn) {
@@ -263,7 +282,10 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
 
     return readerSession.delete(`collectionobjects/${objectCsid}`).should.eventually
       .be.rejected
-      .and.have.deep.property('response.status', 403);
+      .and.have.deep.property('response.status', 403)
+      .then(() => {
+        errors.pop().should.have.deep.property('response.status', 403);
+      });
   });
 
   it('can log out as admin', () =>
@@ -274,7 +296,10 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
   it('cannot list records as admin after logging out', function test() {
     return adminSession.read('collectionobjects').should.eventually
       .be.rejected
-      .and.have.deep.property('response.status', 401);
+      .and.have.deep.property('response.status', 401)
+      .then(() => {
+        errors.pop().should.have.deep.property('response.status', 401);
+      });
   });
 
   it('can list records as reader after logging out as admin', function test() {
@@ -295,11 +320,20 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
   it('cannot list records as reader after logging out', function test() {
     return readerSession.read('collectionobjects').should.eventually
       .be.rejected
-      .and.have.deep.property('response.status', 401);
+      .and.have.deep.property('response.status', 401)
+      .then(() => {
+        errors.pop().should.have.deep.property('response.status', 401);
+      });
   });
 
-  it('cannot log in a second time in the same session', () =>
-    readerSession.login().should.eventually
+  it('cannot log in a second time in the same session', function test() {
+    return readerSession.login().should.eventually
       .be.rejected
-      .and.have.deep.property('response.status', 400));
+      .and.have.deep.property('response.status', 400)
+      .then(() => {
+        // Login errors should not call onError.
+
+        errors.should.have.lengthOf(0);
+      });
+  });
 });

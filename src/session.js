@@ -1,3 +1,5 @@
+/* global btoa */
+
 import cspace from 'cspace-api';
 import urljoin from 'url-join';
 import tokenStore from './tokenStore';
@@ -5,6 +7,18 @@ import tokenStore from './tokenStore';
 const defaultSessionConfig = {
   username: '',
   password: '',
+};
+
+const base64Encode = (value) => {
+  if (typeof value === 'undefined' || value === null) {
+    return value;
+  }
+
+  if (typeof btoa !== 'undefined') {
+    return btoa(value);
+  }
+
+  return new Buffer(value).toString('base64');
 };
 
 export default function session(sessionConfig) {
@@ -73,7 +87,7 @@ export default function session(sessionConfig) {
   const login = () => authRequest({
     grant_type: 'password',
     username: config.username,
-    password: config.password,
+    password: base64Encode(config.password),
   });
 
   const refresh = () => authRequest({
@@ -113,12 +127,18 @@ export default function session(sessionConfig) {
         }
 
         return Promise.reject(error);
+      })
+      .catch((error) => {
+        // Invoke the configured error handler, if any.
+
+        if (config.onError) {
+          return config.onError(error);
+        }
+
+        return Promise.reject(error);
       });
 
   return {
-    login,
-    logout,
-
     config() {
       const configCopy = Object.assign({}, config);
 
@@ -127,7 +147,8 @@ export default function session(sessionConfig) {
 
       return configCopy;
     },
-
+    login,
+    logout,
     create: tokenized('create'),
     read: tokenized('read'),
     update: tokenized('update'),
