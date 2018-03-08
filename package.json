@@ -1,6 +1,6 @@
 {
   "name": "cspace-client",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "CollectionSpace client for browsers and Node.js",
   "author": "Ray Lee <rhlee@berkeley.edu>",
   "license": "ECL-2.0",
@@ -44,7 +44,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
+    "babel-loader": "^7.1.4",
     "babel-plugin-istanbul": "^1.0.3",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
@@ -68,16 +68,16 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-sauce-launcher": "^1.2.0",
     "karma-sourcemap-loader": "^0.3.7",
-    "karma-webpack": "^2.0.9",
+    "karma-webpack": "^2.0.13",
     "mocha": "^3.5.3",
-    "nyc": "^11.4.1",
+    "nyc": "^11.5.0",
     "rimraf": "^2.6.2",
     "send-data": "^8.0.0",
-    "uglifyjs-webpack-plugin": "^1.1.8",
-    "webpack": "^3.10.0"
+    "uglifyjs-webpack-plugin": "^1.2.2",
+    "webpack": "^3.11.0"
   },
   "dependencies": {
-    "cspace-api": "^0.0.13",
+    "cspace-api": "^0.0.14",
     "url-join": "^1.1.0"
   },
   "nyc": {
