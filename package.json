@@ -1,6 +1,6 @@
 {
   "name": "cspace-client",
-  "version": "0.1.9",
+  "version": "1.0.0-rc.1",
   "description": "CollectionSpace client for browsers and Node.js",
   "author": "Ray Lee <rhlee@berkeley.edu>",
   "license": "ECL-2.0",
@@ -77,7 +77,7 @@
     "webpack": "^3.11.0"
   },
   "dependencies": {
-    "cspace-api": "^0.0.14",
+    "cspace-api": "^1.0.0-rc.1",
     "url-join": "^1.1.0"
   },
   "nyc": {
