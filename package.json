@@ -1,6 +1,6 @@
 {
   "name": "cspace-client",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "CollectionSpace client for browsers and Node.js",
   "author": "Ray Lee <rhlee@berkeley.edu>",
   "license": "ECL-2.0",

@@ -35,6 +35,10 @@ describe(`token management on ${clientConfig.url}`, function suite() {
       .be.fulfilled
       .and.have.deep.property('data.presentedToken', accessToken));
 
+  it('does not present the token if auth option is false', () =>
+    session.read('something', { auth: false }).should.eventually
+      .be.rejected);
+
   it('reuses the stored token in a new session with no user', () => {
     const newSession = cspace.session();
 

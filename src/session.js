@@ -113,8 +113,13 @@ export default function session(sessionConfig) {
       });
     });
 
-  const tokenizeRequest = requestConfig =>
-    Object.assign({}, requestConfig, { token: auth.accessToken });
+  const tokenizeRequest = (requestConfig) => {
+    if (requestConfig && requestConfig.auth === false) {
+      return requestConfig;
+    }
+
+    return Object.assign({}, requestConfig, { token: auth.accessToken });
+  };
 
   const tokenized = operation => (resource, requestConfig) =>
     cs[operation](resource, tokenizeRequest(requestConfig))
