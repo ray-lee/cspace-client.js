@@ -1,4 +1,4 @@
-/* global btoa */
+/* global window */
 
 import cspace from 'cspace-api';
 import urljoin from 'url-join';
@@ -14,8 +14,8 @@ const base64Encode = (value) => {
     return value;
   }
 
-  if (typeof btoa !== 'undefined') {
-    return btoa(value);
+  if (typeof window !== 'undefined') {
+    return window.btoa(value);
   }
 
   return new Buffer(value).toString('base64');

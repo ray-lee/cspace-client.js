@@ -125,4 +125,3 @@ describe(`token management on ${clientConfig.url}`, function suite() {
       .be.rejected
       .and.have.deep.property('response.status', 400));
 });
-

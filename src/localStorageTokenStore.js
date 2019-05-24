@@ -1,21 +1,21 @@
-/* global localStorage, JSON */
+/* global window */
 
 import { storageKey } from './tokenHelpers';
 
 const loadClientData = (clientId) => {
-  const data = JSON.parse(localStorage.getItem(storageKey));
+  const data = window.JSON.parse(window.localStorage.getItem(storageKey));
 
   return (data ? data[clientId] : undefined);
 };
 
 const saveClientData = (clientId, clientData) => {
-  const data = JSON.parse(localStorage.getItem(storageKey));
+  const data = window.JSON.parse(window.localStorage.getItem(storageKey));
 
   const updatedData = Object.assign({}, data, {
     [clientId]: clientData,
   });
 
-  localStorage.setItem(storageKey, JSON.stringify(updatedData));
+  window.localStorage.setItem(storageKey, window.JSON.stringify(updatedData));
 };
 
 const withClientData = (clientId, update) => {

@@ -1,5 +1,3 @@
-/* global localStorage */
-
 import chai from 'chai';
 import tokenStore from '../../src/tokenStore';
 

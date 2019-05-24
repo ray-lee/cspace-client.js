@@ -1,4 +1,4 @@
-/* global localStorage */
+/* global window */
 
 import chai from 'chai';
 import localStorageTokenStore from '../../src/localStorageTokenStore';
@@ -36,24 +36,24 @@ describe('localStorageTokenStore', function suite() {
     it('should put tokens into local storage', () => {
       store.store(auth);
 
-      JSON.parse(localStorage.getItem(storageKey))[clientId][url].should.deep.equal(auth);
+      JSON.parse(window.localStorage.getItem(storageKey))[clientId][url].should.deep.equal(auth);
     });
 
     it('should overwrite existing tokens in local storage', () => {
       store.store(auth2);
 
-      JSON.parse(localStorage.getItem(storageKey))[clientId][url].should.deep.equal(auth2);
+      JSON.parse(window.localStorage.getItem(storageKey))[clientId][url].should.deep.equal(auth2);
     });
 
     it('should not affect stored data for other client ids', () => {
-      localStorage.setItem(storageKey, JSON.stringify({
+      window.localStorage.setItem(storageKey, JSON.stringify({
         foo: 'bar',
       }));
 
       store.store(auth2);
 
-      JSON.parse(localStorage.getItem(storageKey))[clientId][url].should.deep.equal(auth2);
-      JSON.parse(localStorage.getItem(storageKey)).foo.should.equal('bar');
+      JSON.parse(window.localStorage.getItem(storageKey))[clientId][url].should.deep.equal(auth2);
+      JSON.parse(window.localStorage.getItem(storageKey)).foo.should.equal('bar');
     });
   });
 
