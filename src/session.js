@@ -18,11 +18,15 @@ const base64Encode = (value) => {
     return window.btoa(value);
   }
 
-  return new Buffer(value).toString('base64');
+  return Buffer.from(value).toString('base64');
 };
 
 export default function session(sessionConfig) {
-  const config = Object.assign({}, defaultSessionConfig, sessionConfig);
+  const config = {
+    ...defaultSessionConfig,
+    ...sessionConfig,
+  };
+
   const authStore = tokenStore(config.clientId, config.url);
 
   let authRequestPending = null;
@@ -74,7 +78,7 @@ export default function session(sessionConfig) {
     }
 
     authRequestPending = csAuth.create('token', { data })
-      .then(response => storeToken(response))
+      .then((response) => storeToken(response))
       .then((response) => {
         authRequestPending = null;
 
@@ -95,33 +99,35 @@ export default function session(sessionConfig) {
     refresh_token: auth.refreshToken,
   });
 
-  const logout = () =>
-    new Promise((resolve) => {
-      // Log out may in the future require an async call to the REST API (for example, to revoke
-      // tokens immediately). Currently it's a client-side only operation that can be done
-      // synchronously, but to be consistent with a future async operation, we'll simulate it with
-      // setTimeout.
+  const logout = () => new Promise((resolve) => {
+    // Log out may in the future require an async call to the REST API (for example, to revoke
+    // tokens immediately). Currently it's a client-side only operation that can be done
+    // synchronously, but to be consistent with a future async operation, we'll simulate it with
+    // setTimeout.
 
-      setTimeout(() => {
-        delete config.username;
-        delete config.password;
+    setTimeout(() => {
+      delete config.username;
+      delete config.password;
 
-        auth = {};
-        authStore.clear();
+      auth = {};
+      authStore.clear();
 
-        resolve({});
-      });
+      resolve({});
     });
+  });
 
   const tokenizeRequest = (requestConfig) => {
     if (requestConfig && requestConfig.auth === false) {
       return requestConfig;
     }
 
-    return Object.assign({}, requestConfig, { token: auth.accessToken });
+    return {
+      ...requestConfig,
+      token: auth.accessToken,
+    };
   };
 
-  const tokenized = operation => (resource, requestConfig) =>
+  const tokenized = (operation) => (resource, requestConfig) => (
     cs[operation](resource, tokenizeRequest(requestConfig))
       .catch((error) => {
         if (error.response && error.response.status === 401 && auth.refreshToken) {
@@ -141,11 +147,12 @@ export default function session(sessionConfig) {
         }
 
         return Promise.reject(error);
-      });
+      })
+  );
 
   return {
     config() {
-      const configCopy = Object.assign({}, config);
+      const configCopy = { ...config };
 
       delete configCopy.clientSecret;
       delete configCopy.password;

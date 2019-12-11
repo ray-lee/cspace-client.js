@@ -40,8 +40,10 @@ module.exports = function cspaceServerMiddleware(req, res, next) {
     const grantType = req.body.grant_type;
 
     if (grantType === 'password') {
-      const username = req.body.username;
-      const password = req.body.password;
+      const {
+        username,
+        password,
+      } = req.body;
 
       accept = username && password;
     } else if (grantType === 'refresh_token') {

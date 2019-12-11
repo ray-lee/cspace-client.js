@@ -4,11 +4,11 @@ import chai from 'chai';
 import localStorageTokenStore from '../../src/localStorageTokenStore';
 import { isLocalStorageAvailable, storageKey } from '../../src/tokenHelpers';
 
-const expect = chai.expect;
+const { expect } = chai;
 
 chai.should();
 
-describe('localStorageTokenStore', function suite() {
+describe('localStorageTokenStore', () => {
   beforeEach(function check() {
     if (!isLocalStorageAvailable()) {
       this.skip();

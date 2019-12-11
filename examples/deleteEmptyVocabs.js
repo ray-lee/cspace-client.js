@@ -18,10 +18,10 @@ const getCsids = (listResult) => {
   const list = listResult.data['ns2:abstract-common-list'];
   const items = list['list-item'];
 
-  return (items ? items.map(item => item.csid) : []);
+  return (items ? items.map((item) => item.csid) : []);
 };
 
-const hasItems = listResult => getCsids(listResult).length > 0;
+const hasItems = (listResult) => getCsids(listResult).length > 0;
 
 const config = {
   params: {
@@ -33,27 +33,20 @@ const emptyVocabularyCsids = [];
 
 session.login()
   .then(() => session.read('vocabularies', config))
-  .then(listResult => getCsids(listResult))
-  .then(csids => log(`found ${csids.length} vocabularies`, csids))
-  .then(csids =>
-    Promise.all(
-      csids.map(csid =>
-        session.read(`vocabularies/${csid}/items`).then((listResult) => {
-          if (!hasItems(listResult)) {
-            emptyVocabularyCsids.push(csid);
-          }
-        })
-      )
-    )
-  )
+  .then((listResult) => getCsids(listResult))
+  .then((csids) => log(`found ${csids.length} vocabularies`, csids))
+  .then((csids) => Promise.all(csids.map((csid) => (
+    session.read(`vocabularies/${csid}/items`)
+      .then((listResult) => {
+        if (!hasItems(listResult)) {
+          emptyVocabularyCsids.push(csid);
+        }
+      })
+  ))))
   .then(() => log(`found ${emptyVocabularyCsids.length} empty vocabularies`, emptyVocabularyCsids))
-  .then(() =>
-    Promise.all(
-      emptyVocabularyCsids.map(csid =>
-        session.delete(`vocabularies/${csid}`)
-          .then(() => log(`deleted ${csid}`))
-      )
-    )
-  )
+  .then(() => Promise.all(emptyVocabularyCsids.map((csid) => (
+    session.delete(`vocabularies/${csid}`)
+      .then(() => log(`deleted ${csid}`))
+  ))))
   .then(() => session.logout())
-  .catch(error => log('error', error));
+  .catch((error) => log('error', error));

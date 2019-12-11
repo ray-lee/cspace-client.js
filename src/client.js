@@ -6,11 +6,14 @@ const defaultClientConfig = {
 };
 
 export default function client(clientConfig) {
-  const config = Object.assign({}, defaultClientConfig, clientConfig);
+  const config = {
+    ...defaultClientConfig,
+    ...clientConfig,
+  };
 
   return {
     config() {
-      const configCopy = Object.assign({}, config);
+      const configCopy = { ...config };
 
       delete configCopy.clientSecret;
 
@@ -18,7 +21,10 @@ export default function client(clientConfig) {
     },
 
     session(sessionConfig) {
-      return session(Object.assign({}, sessionConfig, config));
+      return session({
+        ...sessionConfig,
+        ...config,
+      });
     },
   };
 }

@@ -22,22 +22,25 @@ describe(`token management on ${clientConfig.url}`, function suite() {
   const cspace = client(clientConfig);
   const session = cspace.session(sessionConfig);
 
-  it('can log in and retrieve an access token', () =>
+  it('can log in and retrieve an access token', () => (
     session.login().should.eventually
       .be.fulfilled
       .and.have.deep.property('data.access_token')
       .then((token) => {
         accessToken = token;
-      }));
+      })
+  ));
 
-  it('presents the token to perform operations on resources', () =>
+  it('presents the token to perform operations on resources', () => (
     session.read('something').should.eventually
       .be.fulfilled
-      .and.have.deep.property('data.presentedToken', accessToken));
+      .and.have.deep.property('data.presentedToken', accessToken)
+  ));
 
-  it('does not present the token if auth option is false', () =>
+  it('does not present the token if auth option is false', () => (
     session.read('something', { auth: false }).should.eventually
-      .be.rejected);
+      .be.rejected
+  ));
 
   it('reuses the stored token in a new session with no user', () => {
     const newSession = cspace.session();
@@ -57,7 +60,7 @@ describe(`token management on ${clientConfig.url}`, function suite() {
       .and.have.deep.property('response.status', 400);
   });
 
-  it('transparently renews an expired token', () =>
+  it('transparently renews an expired token', () => (
     session.read(`reject/${accessToken}`).should.eventually
       .be.fulfilled
       .and.have.deep.property('data.presentedToken')
@@ -65,12 +68,14 @@ describe(`token management on ${clientConfig.url}`, function suite() {
         newToken.should.not.equal(accessToken);
 
         accessToken = newToken;
-      }));
+      })
+  ));
 
-  it('presents the new token to perform operations on resources', () =>
+  it('presents the new token to perform operations on resources', () => (
     session.read('something').should.eventually
       .be.fulfilled
-      .and.have.deep.property('data.presentedToken', accessToken));
+      .and.have.deep.property('data.presentedToken', accessToken)
+  ));
 
   it('does not attempt to issue multiple simultaneous token renewal requests', () => {
     const newTokens = {};
@@ -105,23 +110,24 @@ describe(`token management on ${clientConfig.url}`, function suite() {
           newTokens[newToken] = true;
         }),
     ])
-    .then(() => {
-      const newTokenList = Object.keys(newTokens);
+      .then(() => {
+        const newTokenList = Object.keys(newTokens);
 
-      newTokenList.length.should.equal(1);
+        newTokenList.length.should.equal(1);
 
-      accessToken = newTokenList[0];
-    });
+        [accessToken] = newTokenList;
+      });
   });
 
-
-  it('presents the new token to perform operations on resources', () =>
+  it('presents the new token to perform operations on resources', () => (
     session.read('something').should.eventually
       .be.fulfilled
-      .and.have.deep.property('data.presentedToken', accessToken));
+      .and.have.deep.property('data.presentedToken', accessToken)
+  ));
 
-  it('fails if login() is called again', () =>
+  it('fails if login() is called again', () => (
     session.login().should.eventually
       .be.rejected
-      .and.have.deep.property('response.status', 400));
+      .and.have.deep.property('response.status', 400)
+  ));
 });

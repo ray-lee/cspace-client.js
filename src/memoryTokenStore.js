@@ -6,7 +6,9 @@ export default function memoryTokenStore(clientId, url) {
       let clientData = storage.clientId;
 
       if (!clientData) {
-        clientData = storage.clientId = {};
+        storage.clientId = {};
+
+        clientData = storage.clientId;
       }
 
       clientData[url] = auth;

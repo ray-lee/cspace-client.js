@@ -8,7 +8,7 @@ chai.should();
 const errors = [];
 
 const clientConfig = {
-  url: 'http://nightly.collectionspace.org:8180',
+  url: 'https://core.dev.collectionspace.org',
 
   onError: (error) => {
     errors.push(error);
@@ -42,37 +42,39 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
 
   let objectCsid = '';
 
-  it('cannot list records as admin before logging in', function test() {
-    return adminSession.read('collectionobjects').should.eventually
+  it('cannot list records as admin before logging in', () => (
+    adminSession.read('collectionobjects').should.eventually
       .be.rejected
       .and.have.deep.property('response.status', 401)
       .then(() => {
         errors.pop().should.have.deep.property('response.status', 401);
-      });
-  });
+      })
+  ));
 
-  it('cannot list records as reader before logging in', function test() {
-    return readerSession.read('collectionobjects').should.eventually
+  it('cannot list records as reader before logging in', () => (
+    readerSession.read('collectionobjects').should.eventually
       .be.rejected
       .and.have.deep.property('response.status', 401)
       .then(() => {
         errors.pop().should.have.deep.property('response.status', 401);
-      });
-  });
+      })
+  ));
 
-  it('can log in as admin', () =>
+  it('can log in as admin', () => (
     adminSession.login().should.eventually
       .be.fulfilled
       .then(() => {
         adminLoggedIn = true;
-      }));
+      })
+  ));
 
-  it('can log in as reader', () =>
+  it('can log in as reader', () => (
     readerSession.login().should.eventually
       .be.fulfilled
       .then(() => {
         readerLoggedIn = true;
-      }));
+      })
+  ));
 
   it('can create an object record as admin', function test() {
     if (!adminLoggedIn) {
@@ -149,9 +151,9 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
     return adminSession.read('collectionobjects', config).should.eventually
       .include({ status: 200 })
       .and.have.property('data')
-        .with.property('ns2:abstract-common-list')
-          .with.property('list-item')
-            .with.property('csid', objectCsid);
+      .with.property('ns2:abstract-common-list')
+      .with.property('list-item')
+      .with.property('csid', objectCsid);
   });
 
   it('can find the record as reader', function test() {
@@ -171,9 +173,9 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
     return readerSession.read('collectionobjects', config).should.eventually
       .include({ status: 200 })
       .and.have.property('data')
-        .with.property('ns2:abstract-common-list')
-          .with.property('list-item')
-            .with.property('csid', objectCsid);
+      .with.property('ns2:abstract-common-list')
+      .with.property('list-item')
+      .with.property('csid', objectCsid);
   });
 
   it('can read the record as admin', function test() {
@@ -184,11 +186,11 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
     return adminSession.read(`collectionobjects/${objectCsid}`).should.eventually
       .include({ status: 200 })
       .and.have.property('data')
-        .with.property('document')
-          .with.property('ns2:collectionobjects_common')
-            .that.includes({ objectNumber })
-            .and.has.property('comments')
-              .with.property('comment', comment);
+      .with.property('document')
+      .with.property('ns2:collectionobjects_common')
+      .that.includes({ objectNumber })
+      .and.has.property('comments')
+      .with.property('comment', comment);
   });
 
   it('can read the record as reader', function test() {
@@ -199,11 +201,11 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
     return readerSession.read(`collectionobjects/${objectCsid}`).should.eventually
       .include({ status: 200 })
       .and.have.property('data')
-        .with.property('document')
-          .with.property('ns2:collectionobjects_common')
-            .that.includes({ objectNumber })
-            .and.has.property('comments')
-              .with.property('comment', comment);
+      .with.property('document')
+      .with.property('ns2:collectionobjects_common')
+      .that.includes({ objectNumber })
+      .and.has.property('comments')
+      .with.property('comment', comment);
   });
 
   it('can update the record as admin', function test() {
@@ -231,11 +233,11 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
     return adminSession.update(`collectionobjects/${objectCsid}`, config).should.eventually
       .include({ status: 200 })
       .and.have.property('data')
-        .with.property('document')
-          .with.property('ns2:collectionobjects_common')
-            .that.includes({ objectNumber })
-            .and.has.property('comments')
-              .with.property('comment', commentUpdate);
+      .with.property('document')
+      .with.property('ns2:collectionobjects_common')
+      .that.includes({ objectNumber })
+      .and.has.property('comments')
+      .with.property('comment', commentUpdate);
   });
 
   it('cannot update the record as reader', function test() {
@@ -288,52 +290,55 @@ describe(`crud operations on ${clientConfig.url}`, function suite() {
       });
   });
 
-  it('can log out as admin', () =>
+  it('can log out as admin', () => (
     adminSession.logout().should.eventually
       .be.fulfilled
-      .and.be.an('object'));
+      .and.be.an('object')
+  ));
 
-  it('cannot list records as admin after logging out', function test() {
-    return adminSession.read('collectionobjects').should.eventually
+  it('cannot list records as admin after logging out', () => (
+    adminSession.read('collectionobjects').should.eventually
       .be.rejected
       .and.have.deep.property('response.status', 401)
       .then(() => {
         errors.pop().should.have.deep.property('response.status', 401);
-      });
-  });
+      })
+  ));
 
-  it('can list records as reader after logging out as admin', function test() {
-    return readerSession.read('collectionobjects').should.eventually
-      .be.fulfilled;
-  });
+  it('can list records as reader after logging out as admin', () => (
+    readerSession.read('collectionobjects').should.eventually
+      .be.fulfilled
+  ));
 
-  it('can log out as reader', () =>
+  it('can log out as reader', () => (
     readerSession.logout().should.eventually
       .be.fulfilled
-      .and.be.an('object'));
+      .and.be.an('object')
+  ));
 
-  it('can log out multiple times', () =>
+  it('can log out multiple times', () => (
     readerSession.logout().should.eventually
       .be.fulfilled
-      .and.be.an('object'));
+      .and.be.an('object')
+  ));
 
-  it('cannot list records as reader after logging out', function test() {
-    return readerSession.read('collectionobjects').should.eventually
+  it('cannot list records as reader after logging out', () => (
+    readerSession.read('collectionobjects').should.eventually
       .be.rejected
       .and.have.deep.property('response.status', 401)
       .then(() => {
         errors.pop().should.have.deep.property('response.status', 401);
-      });
-  });
+      })
+  ));
 
-  it('cannot log in a second time in the same session', function test() {
-    return readerSession.login().should.eventually
+  it('cannot log in a second time in the same session', () => (
+    readerSession.login().should.eventually
       .be.rejected
       .and.have.deep.property('response.status', 400)
       .then(() => {
         // Login errors should not call onError.
 
         errors.should.have.lengthOf(0);
-      });
-  });
+      })
+  ));
 });

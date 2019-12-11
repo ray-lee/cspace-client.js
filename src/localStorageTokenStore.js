@@ -11,9 +11,10 @@ const loadClientData = (clientId) => {
 const saveClientData = (clientId, clientData) => {
   const data = window.JSON.parse(window.localStorage.getItem(storageKey));
 
-  const updatedData = Object.assign({}, data, {
+  const updatedData = {
+    ...data,
     [clientId]: clientData,
-  });
+  };
 
   window.localStorage.setItem(storageKey, window.JSON.stringify(updatedData));
 };
@@ -28,11 +29,10 @@ const withClientData = (clientId, update) => {
 export default function localStorageTokenStore(clientId, url) {
   return {
     store(auth) {
-      withClientData(clientId, clientData =>
-        Object.assign({}, clientData, {
-          [url]: auth,
-        })
-      );
+      withClientData(clientId, (clientData) => ({
+        ...clientData,
+        [url]: auth,
+      }));
     },
 
     fetch() {
@@ -42,11 +42,10 @@ export default function localStorageTokenStore(clientId, url) {
     },
 
     clear() {
-      withClientData(clientId, clientData =>
-        Object.assign({}, clientData, {
-          [url]: undefined,
-        })
-      );
+      withClientData(clientId, (clientData) => ({
+        ...clientData,
+        [url]: undefined,
+      }));
     },
   };
 }

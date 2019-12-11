@@ -1,7 +1,7 @@
 import chai from 'chai';
 import memoryTokenStore from '../../src/memoryTokenStore';
 
-const expect = chai.expect;
+const { expect } = chai;
 
 chai.should();
 

@@ -24,11 +24,11 @@ const getFirst = (listResult) => {
 session.login()
   .then(() => log('logged in'))
   .then(() => session.read('collectionobjects'))
-  .then(listResult => log('found items', listResult))
-  .then(listResult => getFirst(listResult))
-  .then(uri => log('found first item', uri))
-  .then(uri => (uri ? session.read(uri) : null))
-  .then(result => log('retrieved record', result))
+  .then((listResult) => log('found items', listResult))
+  .then((listResult) => getFirst(listResult))
+  .then((uri) => log('found first item', uri))
+  .then((uri) => (uri ? session.read(uri) : null))
+  .then((result) => log('retrieved record', result))
   .then(() => session.logout())
   .then(() => log('logged out'))
-  .catch(error => log('error', error));
+  .catch((error) => log('error', error));
