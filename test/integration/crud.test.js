@@ -8,7 +8,7 @@ chai.should();
 const errors = [];
 
 const clientConfig = {
-  url: 'https://core.dev.collectionspace.org',
+  url: 'http://localhost:8180',
 
   onError: (error) => {
     errors.push(error);
