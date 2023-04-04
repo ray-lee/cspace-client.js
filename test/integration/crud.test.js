@@ -8,7 +8,7 @@ chai.should();
 const errors = [];
 
 const clientConfig = {
-  url: 'http://localhost:8180',
+  url: 'http://127.0.0.1:8180',
 
   onError: (error) => {
     errors.push(error);

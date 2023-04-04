@@ -76,7 +76,7 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "cspace-api": "^1.0.7",
+    "cspace-api": "^1.0.8",
     "url-join": "^1.1.0"
   },
   "nyc": {
