@@ -2,6 +2,7 @@
 
 [![npm package](https://img.shields.io/npm/v/cspace-client.svg)](https://www.npmjs.com/package/cspace-client)
 [![continuous integration](https://github.com/collectionspace/cspace-client.js/actions/workflows/ci-js.yml/badge.svg?branch=master&event=push)](https://github.com/collectionspace/cspace-client.js/actions/workflows/ci-js.yml)
+[![codecov](https://codecov.io/github/collectionspace/cspace-client.js/branch/master/graph/badge.svg?token=R1MEO51T85)](https://codecov.io/github/collectionspace/cspace-client.js)
 
 A CollectionSpace client, built on the [cspace-api](https://github.com/collectionspace/cspace-api.js) library.
 
