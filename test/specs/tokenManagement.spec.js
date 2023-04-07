@@ -22,7 +22,7 @@ describe(`token management on ${clientConfig.url}`, function suite() {
   const cspace = client(clientConfig);
   const session = cspace.session(sessionConfig);
 
-  it('can log in and retrieve an access token', () => (
+  it('logs in and retrieves an access token', () => (
     session.login().should.eventually
       .be.fulfilled
       .and.have.deep.property('data.access_token')

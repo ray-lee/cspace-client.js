@@ -1,3 +1,5 @@
+/* global globalThis */
+
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import client from '../../src/client';
@@ -8,7 +10,7 @@ chai.should();
 const errors = [];
 
 const clientConfig = {
-  url: 'http://127.0.0.1:8180',
+  url: globalThis.TEST_BACKEND,
 
   onError: (error) => {
     errors.push(error);

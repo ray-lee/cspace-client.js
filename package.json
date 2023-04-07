@@ -34,12 +34,12 @@
     "test": "npm run test-node && npm run test-browser",
     "test-specs": "npm run test-node-specs && npm run test-browser-specs",
     "test-integration": "npm run test-node-integration && npm run test-browser-integration",
-    "test-browser": "cross-env NODE_ENV=test karma start --singleRun=true",
+    "test-browser": "npm run test-browser-specs && npm run test-browser-integration",
     "test-browser-specs": "cross-env NODE_ENV=test karma start --singleRun=true --dir=test/specs",
     "test-browser-integration": "cross-env NODE_ENV=test karma start --singleRun=true --dir=test/integration",
-    "test-node": "cross-env NODE_ENV=test nyc mocha --require @babel/register --require test/stubs/cspaceServer --recursive --exit  test",
-    "test-node-specs": "cross-env NODE_ENV=test nyc mocha --require @babel/register --require test/stubs/cspaceServer --recursive --exit test/specs",
-    "test-node-integration": "cross-env NODE_ENV=test nyc mocha --require @babel/register --require test/stubs/cspaceServer --recursive --exit test/integration"
+    "test-node": "npm run test-node-specs && npm run test-node-integration",
+    "test-node-specs": "cross-env NODE_ENV=test nyc --report-dir coverage/test-node-specs mocha --require @babel/register --require test/stubs/cspaceServer --recursive --exit test/specs",
+    "test-node-integration": "cross-env NODE_ENV=test nyc --report-dir coverage/test-node-integration mocha --require @babel/register --file test/helpers/nodeTestSetup.js --recursive --exit test/integration"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
@@ -58,6 +58,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.19.1",
     "express": "^4.16.2",
+    "http-proxy-middleware": "^2.0.6",
     "istanbul": "^0.4.5",
     "karma": "^6.4.1",
     "karma-chai": "^0.1.0",
@@ -86,7 +87,6 @@
     "reporter": [
       "json"
     ],
-    "report-dir": "./coverage/Node.js",
     "sourceMap": false,
     "instrument": false,
     "cache": true
