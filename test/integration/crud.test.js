@@ -13,6 +13,8 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import client from '../../src/client';
 
+const { expect } = chai;
+
 chai.use(chaiAsPromised);
 chai.should();
 
@@ -59,6 +61,11 @@ describe.skip(`crud operations on ${clientConfig.url}`, function suite() {
 
   let objectCsid = '';
 
+  it('reports null logged in username before logging in', () => {
+    expect(adminSession.username()).to.equal(null);
+    expect(readerSession.username()).to.equal(null);
+  });
+
   it('cannot list records as admin before logging in', () => (
     adminSession.read('collectionobjects').should.eventually
       .be.rejected
@@ -92,6 +99,11 @@ describe.skip(`crud operations on ${clientConfig.url}`, function suite() {
         readerLoggedIn = true;
       })
   ));
+
+  it('reports the logged in username', () => {
+    adminSession.username().should.equal('admin@core.collectionspace.org');
+    readerSession.username().should.equal('reader@core.collectionspace.org');
+  });
 
   it('can create an object record as admin', function test() {
     if (!adminLoggedIn) {
@@ -332,6 +344,11 @@ describe.skip(`crud operations on ${clientConfig.url}`, function suite() {
       .be.fulfilled
       .and.be.an('object')
   ));
+
+  it('reports null logged in username after logging out', () => {
+    expect(adminSession.username()).to.equal(null);
+    expect(readerSession.username()).to.equal(null);
+  });
 
   it('can log out multiple times', () => (
     readerSession.logout().should.eventually

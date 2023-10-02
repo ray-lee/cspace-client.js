@@ -44,24 +44,6 @@ describe(`token management on ${clientConfig.url}`, function suite() {
       .be.rejected
   ));
 
-  it('reuses the stored token in a new session with no auth code', () => {
-    const newSession = cspace.session();
-
-    return newSession.read('something').should.eventually
-      .be.fulfilled
-      .and.have.deep.property('data.presentedToken', accessToken);
-  });
-
-  it('does not reuse the stored token in a new session with an auth code', () => {
-    const newSession = cspace.session({
-      authCode: 'xyz',
-    });
-
-    return newSession.read('something').should.eventually
-      .be.rejected
-      .and.have.deep.property('response.status', 400);
-  });
-
   it('transparently renews an expired token', () => (
     session.read(`reject/${accessToken}`).should.eventually
       .be.fulfilled

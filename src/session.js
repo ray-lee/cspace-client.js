@@ -1,6 +1,5 @@
 import cspace from 'cspace-api';
 import urljoin from 'url-join';
-import tokenStore from './tokenStore';
 import { parseJwt } from './tokenHelpers';
 
 const defaultSessionConfig = {
@@ -15,16 +14,8 @@ export default function session(sessionConfig) {
     ...sessionConfig,
   };
 
-  const authStore = tokenStore(config.clientId, config.url);
-
   let authRequestPending = null;
   let auth = {};
-
-  if (!config.authCode) {
-    // The auth code for this session wasn't specified. Use the stored auth, if any.
-
-    auth = authStore.fetch() || {};
-  }
 
   const cs = cspace({
     url: urljoin(config.url, 'cspace-services'),
@@ -56,8 +47,6 @@ export default function session(sessionConfig) {
       accessToken,
       refreshToken,
     };
-
-    authStore.store(auth);
 
     // We have tokens, so the authoriztion code, code verifier, and client secret can be discarded.
 
@@ -105,7 +94,6 @@ export default function session(sessionConfig) {
     return serviceLogoutPromise
       .finally(() => {
         auth = {};
-        authStore.clear();
 
         resolve({});
       });
